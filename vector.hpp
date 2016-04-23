@@ -4,51 +4,65 @@
 #include <cmath>
 #include <numeric>
 #include <iterator>
+#include <new>
 
 template < class T > class vect {
-	std::vector < T > m;
+	std::vector < T >* m;
 
  public:
- 	vect():m() {}
+ 	vect():m(NULL) {}
 
 	// overloaded constructor
- 	vect(size_t n):m(n) {}
+ 	vect(size_t n)
+	{
+		m = new std::vector< T >( n );
+	}
 
- 	vect(std::vector < T > v):m(v) {}
+ 	vect(std::vector < T > v)
+	{
+	m = new std::vector< T >(v);
+	}
 
 	// copy constructor
-	vect(const vect < T > &v):m(v.getData()) {}
+	vect(const vect < T > &v)
+	{
+		m = new std::vector< T >( *( v.m) );
+	}
 
 	// destructor
-	~vect() {}
+	~vect()
+	{
+		delete m;
+	}
 
-	std::vector < T > getData()const {
-		return m;
+	std::vector < T > getData() const{
+		return *m;
 	} 
 	
 	size_t size() const {
-		return m.size();
+		return m->size();
 	} 
 	
 	void addTo(T value) {
-		m.push_back(value);
+		if ( m != NULL)
+		m->push_back(value);
 	}
 
 	void addAt(T value, size_t loc = 0) {
-		m.emplace(m.begin() + loc, value);
+		m->emplace(m.begin() + loc, value);
 	}
 
 	void rmFrom() {
-		m.pop_back();
+		m->pop_back();
 	}
 
 	void rmAt(size_t loc) {
-		m.erase(m.begin() + loc);
+		m->erase(m.begin() + loc);
 	}
 
 	double sum() const {
 		// calculate the sum of the vectors elements
-		double sum = std::accumulate(m.begin(), m.end());
+		double sum = std::accumulate(m->begin(), m->end());
 		return sum;
 	}
 	
@@ -56,7 +70,7 @@ template < class T > class vect {
 		vect < T > temp = *this;
 		double res = 0;
 		size_t l = 0;
-		size_t s = m.size;
+		size_t s = m->size;
 		while (l < s) {
 			res += temp[l] * temp[l];
 			l++;
@@ -68,7 +82,7 @@ template < class T > class vect {
 		vect < T > temp = *this;
 		double res = 0;
 		size_t l = 0;
-		size_t s = m.size();
+		size_t s = m->size();
 		while (l < s) {
 			res += temp[l] * other[l];
 			l++;
@@ -112,18 +126,21 @@ template < class T > class vect {
 		return *this;
 	}
 
-	void swap(vect < T > &other) {
-		std::swap(this->m, other.m);
-	}
-
 	T & operator[](size_t i) {
-		return m[i];
+		return m->data()[i];
 	}
 	
 	const T & operator[] (size_t i) const {
 		return m[i];
 	}
 };
+
+
+template <class T>
+void swap(vect < T > &a, vect < T > &b) {
+	using std::swap;		
+	swap(a.m, b->m);
+}
 
 template < class T >
     std::ostream & operator<<(std::ostream & os, const vect < T > &v)
