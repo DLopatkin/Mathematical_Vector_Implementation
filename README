@@ -1,0 +1,107 @@
+192.168.1.0(32,64,96,128,144)
+192.168.1.31(63,95,127,143,159)
+255.255.255.224(х4),240(х2)
+
+Клик operator host:(124-1)(host1)
+Router>
+Router>enable
+Router#configure terminal
+Router(config)#interface gigabitEthernet 0/0
+Router(config-if)#ip address 192.168.1.126 255.255.255.224
+Router(config-if)#no shutdown
+Router(config-if)#int
+Router(config-if)#exit
+Router(config)#interface gigabitEthernet 0/1
+Router(config-if)#ip address 192.168.1.158 255.255.255.240
+Router(config-if)#no shutdown
+
+Кликаем IP HOST(214-1)(host3)
+Switch_2>
+Switch_2>en
+Switch_2>#conf t
+Switch_2(config)>#interface vlan 1
+Switch_2(config-if)>#ip add 192.168.1.157 255.255.255.240
+Switch_2(config-if)>#no shutdown
+
+Кликаем Reception host (124-1)(host1)
+IPv4 192.168.1.97 255.255.255.224 
+GWv4 192.168.1.126 
+(IPv6 2001:DB8:ACAD:A::FF/64 
+GWv6 FE80::1 )
+
+Кликаем Operator Host (124-5)(host2)
+IPv4 192.168.1.98 255.255.255.224 
+GWv4 192.168.1.126 
+(IPv6 2001:DB8:ACAD:A::15/64 
+GWv6 FE80::1 )
+
+Кликаем IT host (214-1)(host 3)
+Pv4 192.168.1.145 255.255.255.240 
+GWv4 192.168.1.158 
+(IPv6 2001:DB8:ACAD:B::FF/64 
+GWv6 FE80::1)
+
+Кликаем TFTP Server 
+IPv4 192.168.1.146 255.255.255.240 
+GWv4 192.168.1.158 
+(IPv6 2001:DB8:ACAD:B::15/64 
+GWv6 FE80::1)
+
+Кликаем Operator Host (124-1)(host1)
+Router(config-if)#exit
+Router(config)#hostname Middle
+Middle(config)#enable secret Cisco
+Middle(config)#line console 0
+Middle(config-line)#password class
+Middle(config-line)#login
+Middle(config-line)#exit
+Middle(config)#security passwords min-length 10
+Middle(config)#service password-encryption
+Middle(config)#ip domain-name cisco.com
+Middle(config)#crypto key generate rsa
+1024
+Middle(config)#line vty 0 4
+Middle(config-line)#exit
+Middle(config)#username netadmin secret Cisco_CCNA5
+Middle(config)#line vty 0 4
+Middle(config-line)#login local
+Middle(config-line)#transport input ssh
+Middle(config-line)#exi
+Middle(config)#interface gigabitEthernet 0/0
+Middle(config-if)#ipv6 address
+2001:DB8:ACAD:A::1/64
+Middle(config-if)#fe
+Middle(config-if)#ipv6 lin
+Middle(config-if)#ipv6 add fe80::1 lin
+Middle(config-if)#ex
+Middle(config)#interface gigabitEthernet 0/0
+Middle(config-if)#ipv address 2001:DB8:ACAD:B::1/64
+Middle(config-if)#ipv6 address fe80::1 link-local
+Middle(config-if)#ex
+Middle(config)#interface gigabitEthernet 0/0
+Middle(config-if)#description To_IT_Department_Switch
+Middle(config-if)#ex
+Middle(config)#interface gigabitEthernet 0/1
+Middle(config-if)#description To_Administration_Switch(214A)
+
+Кликаем IT Host(214-1)(host3)
+Switch_2>
+Switch_2>en
+Switch_2>#conf t
+Switch_2(config)>#line vty 0 4
+Switch_2(config-if)>#password class
+Switch_2(config-if)>#login
+Switch_2(config-if)>#exi
+Switch_2(config)>#ip default-gateway 192.168.1.158
+
+Добавляем в reception host IPV6 address и gateway, а потом и в operator host, it host, Tftp server
+
+Кликаем Operator host(124-1)(host-1)
+
+Middle(config-if)#exi
+Middle(config)#ex
+Middle#copy running-config tftp
+Выплывает строка 192.168.146
+Middle#crypto key generate rsa
+1024
+Middle(config)#banner motd #Welcome#
