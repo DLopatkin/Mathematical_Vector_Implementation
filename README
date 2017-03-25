@@ -3,25 +3,25 @@
 255.255.255.224(х4),240(х2)
 
 Клик operator host:(124-1)(host1)
-Router>
-Router>enable
-Router#configure terminal
-Router(config)#interface gigabitEthernet 0/0
-Router(config-if)#ip address 192.168.1.126 255.255.255.224
-Router(config-if)#no shutdown
-Router(config-if)#int
-Router(config-if)#exit
-Router(config)#interface gigabitEthernet 0/1
-Router(config-if)#ip address 192.168.1.158 255.255.255.240
-Router(config-if)#no shutdown
 
-Кликаем IP HOST(214-1)(host3)
-Switch_2>
-Switch_2>en
-Switch_2>#conf t
-Switch_2(config)>#interface vlan 1
-Switch_2(config-if)>#ip add 192.168.1.157 255.255.255.240
-Switch_2(config-if)>#no shutdown
+enable
+configure terminal
+interface gigabitEthernet 0/0
+ip address 192.168.1.126 255.255.255.224
+no shutdown
+int
+exit
+interface gigabitEthernet 0/1
+ip address 192.168.1.158 255.255.255.240
+no shutdown
+
+Кликаем IT HOST(214-1)(host3)
+
+en
+conf t
+interface vlan 1
+ip add 192.168.1.157 255.255.255.240
+no shutdown
 
 Кликаем Reception host (124-1)(host1)
 IPv4 192.168.1.97 255.255.255.224 
@@ -48,60 +48,66 @@ GWv4 192.168.1.158
 GWv6 FE80::1)
 
 Кликаем Operator Host (124-1)(host1)
-Router(config-if)#exit
-Router(config)#hostname Middle
-Middle(config)#enable secret Cisco
-Middle(config)#line console 0
-Middle(config-line)#password class
-Middle(config-line)#login
-Middle(config-line)#exit
-Middle(config)#security passwords min-length 10
-Middle(config)#service password-encryption
-Middle(config)#ip domain-name cisco.com
-Middle(config)#crypto key generate rsa
+exit
+hostname Middle
+enable secret Cisco
+line console 0
+password class
+login
+exit
+security passwords min-length 10
+service password-encryption
+ip domain-name cisco.com
+crypto key generate rsa
+
 1024
-Middle(config)#line vty 0 4
-Middle(config-line)#exit
-Middle(config)#username netadmin secret Cisco_CCNA5
-Middle(config)#line vty 0 4
-Middle(config-line)#login local
-Middle(config-line)#transport input ssh
-Middle(config-line)#exi
-Middle(config)#interface gigabitEthernet 0/0
-Middle(config-if)#ipv6 address
+
+line vty 0 4
+exit
+username netadmin secret Cisco_CCNA5
+line vty 0 4
+login local
+transport input ssh
+exit
+interface gigabitEthernet 0/0
+ipv6 address
 2001:DB8:ACAD:A::1/64
-Middle(config-if)#fe
-Middle(config-if)#ipv6 lin
-Middle(config-if)#ipv6 add fe80::1 lin
-Middle(config-if)#ex
-Middle(config)#interface gigabitEthernet 0/0
-Middle(config-if)#ipv address 2001:DB8:ACAD:B::1/64
-Middle(config-if)#ipv6 address fe80::1 link-local
-Middle(config-if)#ex
-Middle(config)#interface gigabitEthernet 0/0
-Middle(config-if)#description To_IT_Department_Switch
-Middle(config-if)#ex
-Middle(config)#interface gigabitEthernet 0/1
-Middle(config-if)#description To_Administration_Switch(214A)
+fe
+ipv6 lin
+ipv6 add fe80::1 lin
+ex
+interface gigabitEthernet 0/1
+ipv address 2001:DB8:ACAD:B::1/64
+ipv6 address fe80::1 link-local
+ex
+interface gigabitEthernet 0/0
+description To_IT_Department_Switch(To_LAB_124_C_Switch)(To_First_Floor_LAN)
+ex
+interface gigabitEthernet 0/1
+description To_Administration_Switch(To_LAB_214_A_Switch)(To_Second_Floor_LAN)
 
 Кликаем IT Host(214-1)(host3)
-Switch_2>
-Switch_2>en
-Switch_2>#conf t
-Switch_2(config)>#line vty 0 4
-Switch_2(config-if)>#password class
-Switch_2(config-if)>#login
-Switch_2(config-if)>#exi
-Switch_2(config)>#ip default-gateway 192.168.1.158
+
+en
+conf t
+line vty 0 4
+password class
+login
+exi
+ip default-gateway 192.168.1.158
 
 Добавляем в reception host IPV6 address и gateway, а потом и в operator host, it host, Tftp server
 
 Кликаем Operator host(124-1)(host-1)
 
-Middle(config-if)#exi
-Middle(config)#ex
-Middle#copy running-config tftp
+exi
+ex
+copy running-config tftp
+
 Выплывает строка 192.168.146
-Middle#crypto key generate rsa
+
+crypto key generate rsa
+
 1024
-Middle(config)#banner motd #Welcome#
+
+banner motd #Welcome#
