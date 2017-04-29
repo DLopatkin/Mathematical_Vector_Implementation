@@ -17,7 +17,6 @@ encapsulation dot1Q 101
 ip address 192.168.101.1 255.255.255.0
 interface g0/0
 no shutdown
-end
 
 HQ:
 configure terminal
@@ -36,7 +35,6 @@ no shutdown
 interface g0/0
 ip addres 192.168.18.41 255.255.255.248
 no shutdown
-end
 
 Site2:
 configure terminal
@@ -48,7 +46,6 @@ no shutdown
 interface s0/0/1
 ip addres 192.168.10.114 255.255.255.252
 no shutdown
-end
 
 Site1-SW1:
 configure terminal
@@ -57,7 +54,6 @@ hostname Site1-SW1
 interface vlan 101
 ip addres 192.168.101.11 255.255.255.0
 no shutdown
-end
 
 Site1-SW2:
 configure terminal 
@@ -66,8 +62,6 @@ hostname Site1-SW2
 interface vlan 101
 ip addres 192.168.101.22 255.255.255.0
 no shutdown
-end
-
 
 Step 2: Configure Site1
 
@@ -86,8 +80,6 @@ logging synchronous
 exit
 service password-encryption
 banner motd %Precaucion%
-end
-
 
 Step 3: Configure the Router Physical Interfaces
 
@@ -96,7 +88,6 @@ configure terminal
 interface s0/0/0
 clock rate 128000
 no shutdown
-end
 
 Site2:
 configure terminal 
@@ -106,26 +97,22 @@ no shutdown
 interface s0/0/1
 clock rate 128000
 no shutdown
-end
 
 Step 4: Configure static and default routing
 
 Site1:
 configure terminal 
 ip route 0.0.0.0 0.0.0.0 s0/0/0
-end
 
 HQ:
 configure terminal 
 ip route 0.0.0.0 0.0.0.0 s0/1/0
 ip route 192.168.200.0 255.255.252.0 s0/0/1
-end
 
 Site2:
 configure terminal 
 ip route 0.0.0.0 0.0.0.0 s0/0/1
 ip route 192.168.200.0 255.255.252.0 s0/0/0
-end
 
 Step 5: Configure OSPF Routing
 
@@ -136,7 +123,6 @@ network 192.168.10.104 0.0.0.3 area 0
 network 192.168.45.0 0.0.0.255 area 0
 network 192.168.47.0 0.0.0.255 area 0
 network 192.168.101.0 0.0.0.255 area 0
-end
 
 HQ:
 configure terminal
@@ -144,13 +130,11 @@ router ospf 10
 network 192.168.10.104 0.0.0.3 area 0
 network 192.168.10.112 0.0.0.3 area 0
 network 192.168.18.40 0.0.0.7 area 0
-end
 
 Site2:
 configure terminal
 router ospf 10
 network 192.168.10.112 0.0.0.3 area 0
-end
 
 Step 6: Customize single-area OSPFv2
 
@@ -168,7 +152,6 @@ router ospf 10
 passive-interface g0/0.45
 passive-interface g0/0.47
 passive-interface g0/0.101
-end
 
 HQ:
 configure terminal
@@ -184,7 +167,6 @@ ip ospf cost 7500
 exit
 router ospf 10
 passive-interface g0/0
-end
 
 Site2:
 configure terminal
@@ -192,7 +174,6 @@ int s0/0/1
 bandwidth 128
 router ospf 10
 router-id 3.3.3.3
-end
 
 Step 7: Configure VLANs and Trunking
 
@@ -218,7 +199,6 @@ ip default-gateway 192.168.101.1
 interface range f0/1-9,f0/11-14, f0/16-24
 switchport mode access
 shutdown
-end
 
 Site1-SW2:
 configure terminal
@@ -242,7 +222,6 @@ ip default-gateway 192.168.101.1
 interface range f0/1-2, f0/4-20, f0/22-24, g0/1
 switchport mode access
 shutdown
-end
 
 Step 8: Configure DHCP
 
@@ -258,7 +237,6 @@ ip dhcp pool vlan47
 default-router 192.168.47.1
 dns-server 192.168.18.100
 network 192.168.47.0 255.255.255.0
-end
 
 Step 9: Configure NAT
 
@@ -274,7 +252,6 @@ access-list 1 permit 192.168.45.0 0.0.0.255
 access-list 1 permit 192.168.47.0 0.0.0.255
 access-list 1 permit 192.168.200.0 0.0.3.255
 ip nat inside source list 1 pool INTERNET
-end
 
 Step 10: Configure Access Control Lists
 
@@ -293,4 +270,3 @@ access-list 101 permit tcp any any established
 access-list 101 deny ip any any 
 int s0/1/0
 ip access-group 101 in
-end
